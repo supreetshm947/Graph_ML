@@ -1,0 +1,10 @@
+kaggle
+
+# for graph analysis
+matplotlib
+
+# for graph
+pandas
+networkx
+numpy
+torch

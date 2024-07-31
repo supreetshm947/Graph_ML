@@ -1,0 +1,5 @@
+*.zip
+datasets/
+*.npy
+.idea
+__pycache__
