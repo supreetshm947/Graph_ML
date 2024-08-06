@@ -9,15 +9,20 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score
+import graph_utils as utils
 
+file_path = "../datasets/cora/cora_cites.csv"
 
-node_embeddings = np.load("node_embeddings_64.npy")
+G = utils.read_graph(file_path)
+
+node_embeddings = np.load("node_embeddings_simple_64.npy")
 
 # Normalizing embeddings
 scaler = StandardScaler()
 node_embeddings = scaler.fit_transform(node_embeddings)
 
 content = pd.read_csv("../datasets/cora/cora.content", sep="\t", skiprows=0, header=None)
+content = content.set_index(content.columns[0]).loc[list(G.nodes())].reset_index()
 
 labels = content[content.columns[-1]]
 

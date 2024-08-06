@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 
 # Hyper-params
 num_walks = 10
-walk_length = 40
+walk_length = 20
 embed_size = 128
 window_size = 5
 batch_size = 512
