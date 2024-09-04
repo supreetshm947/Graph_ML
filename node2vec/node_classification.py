@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-import pandas as pd
+import pandas as pd 
 import numpy as np
 from sklearn.metrics import accuracy_score
 import graph_utils as utils

@@ -88,8 +88,8 @@ class Node2Vec_simple(torch.nn.Module):
 
 
 def train_deepwalk(graph, vocab_size, embed_size, hidden_size, batch_size=64, lr=0.001, epochs=5):
-    model = Node2Vec(vocab_size, embed_size, hidden_size).to(device=device)
-    # model = Node2Vec_simple(embed_size).to(device=device)
+    #model = Node2Vec(vocab_size, embed_size, hidden_size).to(device=device)
+    model = Node2Vec_simple(embed_size).to(device=device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-5)
     loss_fn = torch.nn.CrossEntropyLoss()
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5,
