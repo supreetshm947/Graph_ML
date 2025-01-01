@@ -23,7 +23,7 @@ def read_graph_from_jsonl(jsonl_path, device, max_nodes=0):
                 node_feat = node_feat + [0] * (max_nodes - len(node_feat))
             node_feat = torch.tensor(node_feat, dtype=torch.float32).to(device)
             edge_index = torch.tensor(data_dict.get("edge_index"), dtype=int).to(device)
-            edge_attr = torch.tensor(data_dict.get("edge_attr"), dtype=int).to(device)
+            edge_attr = torch.tensor(data_dict.get("edge_attr"), dtype=torch.float32).to(device).unsqueeze(1)
             y = torch.tensor(data_dict['y'], dtype=torch.float).to(device)
             data = Data(x=node_feat, edge_index=edge_index, edge_attr=edge_attr, y=y)
 
