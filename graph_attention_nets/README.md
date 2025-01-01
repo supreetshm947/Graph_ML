@@ -2,44 +2,36 @@
 
 Each node's features are linearly transformed using a weight matrix:
 
-\[
-\mathbf{h}' = \mathbf{W} \mathbf{h}
-\]
+**h' = W * h**
 
 Where:  
-- \( \mathbf{h} \): Node feature matrix (\( N \times F_{\text{in}} \))  
-- \( \mathbf{W} \): Learnable weight matrix (\( F_{\text{in}} \times F_{\text{out}} \))  
-- \( \mathbf{h}' \): Transformed node feature matrix (\( N \times F_{\text{out}} \))  
+- **h**: Node feature matrix (N × F_in)  
+- **W**: Learnable weight matrix (F_in × F_out)  
+- **h'**: Transformed node feature matrix (N × F_out)  
 
-In **multi-head attention**, each head learns its own weight matrix:
+For **multi-head attention**, each head learns its own weight matrix:
 
-\[
-\mathbf{h}'_i = \mathbf{W}_i \mathbf{h}
-\]
+**h'_i = W_i * h**
 
-Where \( i \) is the head index.
+Where **i** is the head index.
 
 ---
 
 ### 2️⃣ **Attention Mechanism**
 
-For each edge \( (i, j) \) between nodes \( i \) (source) and \( j \) (destination), the attention score is calculated using:
+For each edge `(i, j)` between nodes `i` (source) and `j` (destination), the attention score is calculated using:
 
-\[
-e_{ij} = \text{LeakyReLU}\left(\mathbf{a}^T [\mathbf{W} \mathbf{h}_i \, || \, \mathbf{W} \mathbf{h}_j \, || \, \mathbf{e}_{ij}]\right)
-\]
+**e_ij = LeakyReLU(a^T [W * h_i || W * h_j || e_ij])**
 
 Where:  
-- \( \mathbf{a} \): Attention weight vector (\( 3 F_{\text{out}} \))  
-- \( || \): Concatenation operator  
-- \( \mathbf{e}_{ij} \): Edge attributes between nodes \( i \) and \( j \)  
-- \( e_{ij} \): Attention score for edge \( (i, j) \)
+- **a**: Attention weight vector (3 * F_out)  
+- `||`: Concatenation operator  
+- **e_ij**: Edge attributes between nodes `i` and `j`  
+- **e_ij**: Attention score for edge `(i, j)`
 
 For **multi-head attention**, each head computes:
 
-\[
-e_{ij}^{(k)} = \text{LeakyReLU}\left(\mathbf{a}_k^T [\mathbf{W}_k \mathbf{h}_i \, || \, \mathbf{W}_k \mathbf{h}_j \, || \, \mathbf{e}_{ij}]\right)
-\]
+**e_ij^(k) = LeakyReLU(a_k^T [W_k * h_i || W_k * h_j || e_ij])**
 
 ---
 
@@ -47,19 +39,15 @@ e_{ij}^{(k)} = \text{LeakyReLU}\left(\mathbf{a}_k^T [\mathbf{W}_k \mathbf{h}_i \
 
 Attention scores are normalized across neighboring nodes using the **softmax** function:
 
-\[
-\alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k \in \mathcal{N}(j)} \exp(e_{ik})}
-\]
+**α_ij = exp(e_ij) / Σ_{k ∈ N(j)} exp(e_ik)**
 
 Where:  
-- \( \mathcal{N}(j) \): Set of neighbors of node \( j \)  
-- \( \alpha_{ij} \): Normalized attention coefficient  
+- **N(j)**: Set of neighbors of node `j`  
+- **α_ij**: Normalized attention coefficient  
 
 For **multi-head attention**:
 
-\[
-\alpha_{ij}^{(k)} = \frac{\exp(e_{ij}^{(k)})}{\sum_{k \in \mathcal{N}(j)} \exp(e_{ik}^{(k)})}
-\]
+**α_ij^(k) = exp(e_ij^(k)) / Σ_{k ∈ N(j)} exp(e_ik^(k))**
 
 ---
 
@@ -67,25 +55,19 @@ For **multi-head attention**:
 
 Node features are aggregated using the attention coefficients:
 
-\[
-\mathbf{h}_j' = \sum_{i \in \mathcal{N}(j)} \alpha_{ij} \mathbf{W} \mathbf{h}_i
-\]
+**h_j' = Σ_{i ∈ N(j)} α_ij * W * h_i**
 
 For **multi-head attention**, features from all heads are concatenated:
 
-\[
-\mathbf{h}_j' = ||_{k=1}^{H} \sum_{i \in \mathcal{N}(j)} \alpha_{ij}^{(k)} \mathbf{W}_k \mathbf{h}_i
-\]
+**h_j' = ||_{k=1}^H Σ_{i ∈ N(j)} α_ij^(k) * W_k * h_i**
 
 Where:  
-- \( H \): Number of attention heads  
-- \( || \): Concatenation operator  
+- **H**: Number of attention heads  
+- `||`: Concatenation operator  
 
 If using **averaging** instead of concatenation (e.g., in the final layer):
 
-\[
-\mathbf{h}_j' = \frac{1}{H} \sum_{k=1}^{H} \sum_{i \in \mathcal{N}(j)} \alpha_{ij}^{(k)} \mathbf{W}_k \mathbf{h}_i
-\]
+**h_j' = (1 / H) * Σ_{k=1}^H Σ_{i ∈ N(j)} α_ij^(k) * W_k * h_i**
 
 ---
 
@@ -93,13 +75,11 @@ If using **averaging** instead of concatenation (e.g., in the final layer):
 
 After passing through multiple GAT layers, the final node representations are aggregated across batches:
 
-\[
-\mathbf{h}_{\text{graph}} = \text{scatter}(\mathbf{h}, \mathbf{batch}, \text{reduce="mean"})
-\]
+**h_graph = scatter(h, batch, reduce="mean")**
 
 Where:  
-- \( \mathbf{h} \): Node embeddings after GAT layers  
-- \( \mathbf{batch} \): Batch index for each node  
-- \( \mathbf{h}_{\text{graph}} \): Final graph-level embedding  
+- **h**: Node embeddings after GAT layers  
+- **batch**: Batch index for each node  
+- **h_graph**: Final graph-level embedding  
 
 ---
